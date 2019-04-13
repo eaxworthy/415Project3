@@ -1,10 +1,10 @@
 //Description: Takes a text file supplied by the user
 //             and turns it into a word index, implemented
-//             through the use of a BST 
+//             through the use of a TTT
 
 #include <iostream>
 #include <fstream>
-#include "bst.h"
+#include "TTT.h"
 using namespace std;
 
 int main(int argc, char* argv[]) {
@@ -15,20 +15,21 @@ int main(int argc, char* argv[]) {
 	}
 
 	ifstream input(argv[1]);
-	BST myTree;
-
+	TTT myTree;
 	if(input.is_open()){
             myTree.buildTree(input);
             input.close();
+/*****
             while(1){
 	        choice = 0;
 	        cout <<"Options: (1) display index, (2) search, (3) save index, (4) quit\n";
 	        cin >> choice;
-
+*****/
+/*****
 		//Print index
 	        if(choice == 1)
 	            myTree.printTree(cout);
-	       
+
 		//Search index for a word
 		else if(choice == 2)
 	            myTree.contains();
@@ -44,14 +45,16 @@ int main(int argc, char* argv[]) {
 		    cout << "Saved\n";
 	        }
 
-		//Quit	
+		//Quit
 	        else
 		    break;
             }
         }
+	*****/
+  }
 	else{
 	    cout << "Invalid File Name. Restart Program.\n";
 	    return 2;
-        }
+  }
 	return 0;
 }

@@ -1,48 +1,23 @@
 //Description: Implementations for the binary search tree class.
 
-#include "TTH.h"
+#include "TTT.h"
 #include "time.h"
 #include <iomanip>
 #include <sstream>
 
 //Constructor
-TTH::TTH(){
+TTT::TTT(){
     root = NULL;
 }
 
 //Returns true if there are no nodes in the tree
-bool TTH::isEmpty(){
+bool TTT::isEmpty(){
     return root == NULL;
 }
-/*****
-//Used to implement the search function in the main
-//program.
-void TTH::contains() const{
-   string input;
-   node *foundNode = NULL;
-   cout << "Search word: ";
-   cin >> input;
-    	if(containsHelper(input, root, foundNode)){
-	    cout << "Line Numbers: " << foundNode->lines[0];
-	    for(int i = 1; i < foundNode->lines.size(); i++)
-		cout << ", " <<foundNode->lines[i];
-	    cout << '\n';
-	    }
-	else
-	    cout << '\"' << input <<"\" is not in the document\n";
-}
-
-//Prints the index to the supplied receiver, either
-//cout or the output file
-void TTH::printTree(ostream & out) const {
-	out << "Binary Search Tree Index:\n-------------------------\n";
-	printTreeHelper(root, out);
-}
-*****/
 
 //Receives the specified input file and constructs
 //the actual tree. Prints a message when finished.
-void TTH::buildTree(ifstream & input){
+void TTT::buildTree(ifstream & input){
 	int line = 1, numWords = 0, distWords = 0, treeHeight = 0;
 	stringstream tempWord;
 	double totalTime, finishTime, startTime = clock();
@@ -66,7 +41,8 @@ void TTH::buildTree(ifstream & input){
         if (tempWord.length() > 0){
         //Once word is formatted,call insert with the word, the line of the input
         //file it came from, the root of our tree, and the distinct word counter
-            insertHelper(tempWord, line, root, distWords);
+            node* temp = nullptr;
+            insertHelper(tempWord, line, root, temp, distWords);
             //Increment our total number of words inserted
             numWords++;
             //Clear out tempWord so we can use it again
@@ -94,7 +70,7 @@ void TTH::buildTree(ifstream & input){
 	<<"Total time spent building index: " << totalTime << endl;
 
 	cout << setw(40) << std::left
-	<<"Height of TTH is : " << treeHeight << endl;
+	<<"Height of TTT is : " << treeHeight << endl;
   *****/
 }
 
@@ -102,67 +78,16 @@ void TTH::buildTree(ifstream & input){
 //the word was found at, node is the node of the tree being
 //examined, and distWord is incremented if a new word is created
 //and used by buildTree
-void TTH::insertHelper(const string &x, int line, node *& t, node *& p, int &distWord){
+void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &distWord){
     if(t == NULL){
 	    t = new node(x, NULL, NULL);
-	    t->lines[0].push_back(line);
+      t->parent = NULL;
+	    t->lines1.push_back(line);
 	    distWord++;
+      cout << "Created node for word " << t->key1;
+      cout << "Which is found on line " << t->lines1.back();
     }
     else {
-	if (x.compare(t->key) > 0)
-   	    insertHelper(x, line, t->right, t, distWord);
-        //If word is already in tree, then add the line the inserted word
-        //came from the the nodes lines vector
-	else if (x.compare(t->key) == 0)
-	    t->lines.push_back(line);
-	else
-	    insertHelper(x, line, t->left, t, distWord);
 
     }
-}
-
-//Used by contains() to see if a words is present or not. Will
-//give contains() a pointer to the found node so that contains()
-//can prints the lines the word was found on.
-//bool TTH::containsHelper(const string & x, node * t, node * &result) const{
-	if (t == NULL)
-		return false;
-	if (t->key.compare(x) == 0){
-	    result = t;
- 	    return true;
-	}
-	else if (x > t->key)
-		return containsHelper(x, t->right, result);
-	else
-		return containsHelper(x, t->left, result);
-}
-
-/*****
-//Called by printTree(), does the actual formatted printing
-void TTH::printTreeHelper(node *t, ostream & out) const{
-    if(t == NULL)
-		return;
-	else {
-		printTreeHelper(t->left, out);
-		out << setw(30) << std::left;
-		out << t->key << " " << t->lines[0];
-		for (int i = 1; i < t->lines.size(); i++)
-			out << ", " << t->lines[i];
-		out << endl;
-		printTreeHelper(t->right, out);
-	}
-}
-
-//Returns height of tree. If tree has only one node, height is 1
-int TTH::findHeight(node *t){
-    if(t == NULL)
-	return 0;
-    else{
-	int leftHeight = findHeight(t->left), rightHeight = findHeight(t->right);
-	if(leftHeight > rightHeight)
-	    return(leftHeight+1);
-	else
-	    return(rightHeight+1);
-    }
-}
-*****/
+  }
