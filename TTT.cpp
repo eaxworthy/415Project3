@@ -85,9 +85,54 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
 	    t->lines1.push_back(line);
 	    distWord++;
       cout << "Created node for word " << t->key1;
-      cout << "Which is found on line " << t->lines1.back();
+      cout << " which is found on line " << t->lines1.back();
+      return;
     }
-    else {
+    if(t->leftchild == NULL){ //leaf node reached
+      if(t->key2 == ""){ //single value in leaf
+        if(x.compare(t->key1) < 0){ //x is smaller than first key
+          t->key2 = t->key1;
+          t->key1 = x;
+          t->lines2 = t->lines1;
+          t->lines1.clear();
+          t->lines1.push_back(line);
+          cout<< "swapped " << t->key2 << "with " << x << endl;
+        }
+        else if(x.compare(t->key1) > 0){ //x is larger than first key
+          t->key2 = x;
+          cout<< "Key2 is now " << t->key2 << endl;
+        }
+        else //k == t->key1
+          t->lines1.push_back(line);
+      }
+      else if(t==root){ //a one time case for the third word, when root is a leaf
+        node* leftChild = new node(t->key1, NULL, NULL);
+        leftChild->lines1 = t->lines1;
+        leftChild->parent = root;
+        node* rightChild = new node(t->key2, NULL, NULL);
+        rightChild->lines1 = t->lines2;
+        rightChild->parent = root;
+        t->leftchild = leftChild;
+        t->rightchild = rightChild;
+        t->lines1.clear();
+        t->lines2.clear();
+        t->lines1.push_back(line);
+      }
+      else if(t!= root && t->parent->key2==""){ //need to promote a value and parent has room
+        if(x.compare(t->parent->key1) > 0){
+          t->parent->key2 = t->key1;
+          t->parent->key1 = x;
+          cout<< "swapped " << t->parent->key2 << "with " << x << endl;
+        }
+        else if (x.compare(t->parent->key1) < 0){
 
+        }
+        else{
+          t->parent->lines1.push_back(line);
+        }
+      }
+      else{ //need to promote and no room in parent. The tricky part
+
+      }
     }
-  }
+}

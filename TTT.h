@@ -26,7 +26,6 @@ class TTT{
                 leftchild = l;
                 middlechild = NULL;
                 rightchild = r;
-
 	       }
 	       string key1, key2;
          vector<int> lines1, lines2;
