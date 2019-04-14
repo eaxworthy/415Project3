@@ -24,8 +24,8 @@ class TTT{
                 key1=x;
                 key2="";
                 leftchild = l;
-                middlechild = NULL;
-                rightchild = r;
+                middlechild = r;
+                rightchild = NULL;
 	       }
 	       string key1, key2;
          vector<int> lines1, lines2;
@@ -34,7 +34,7 @@ class TTT{
 	node * root;
 	void insertHelper(const string &X, int line, node *& t, node*& p, int &distWords);
 	//bool containsHelper(const string & x, node * t, node* &result) const;
-	//void printTreeHelper(node *t, ostream & out) const;
+	void printTreeHelper(node *t, ostream & out) const;
 	//int findHeight(node *t);
 };
 
