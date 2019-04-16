@@ -155,20 +155,45 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
         }
       }
 
-      else if(t==root){ //a one time case for the third word, when root is a leaf DONE
+      else if(t==root){ //a one time case for the third word, when root is a leaf
+        //TODO Add in comparison to determine correct value to promote
+        string temp = t->key1;
+        vector<int> tempLines = t->lines1;
+        if(x.compare(t->key1) > 0){
+          if(x.compare(t->key2) > 0){ //case: x is largest word
+            temp = t->key2;
+            tempLines = t->lines2;
+            t->lines2.clear();
+            t->lines2.push_back(line);
+            t->key2 = x;
+            cout << t->key1 << ' ' << temp << t->key2 << endl;
+          }
+
+          else {   //case x is middle word
+            temp = x;
+            tempLines.clear();
+            tempLines.push_back(line);
+          }
+        }
+        else{ //case: x is smallest word
+          t->key1 = x;
+          t->lines1.clear();
+          t->lines1.push_back(line);
+        }
+
         node* leftChild = new node(t->key1, NULL, NULL);
         leftChild->lines1 = t->lines1;
         leftChild->parent = root;
         node* rightChild = new node(t->key2, NULL, NULL);
         rightChild->lines1 = t->lines2;
         rightChild->parent = root;
-        t->key1 = x;
+        t->key1 = temp;
         t->key2 = "";
         t->leftchild = leftChild;
         t->middlechild = rightChild;
         t->lines1.clear();
         t->lines2.clear();
-        t->lines1.push_back(line);
+        t->lines1 = tempLines;
         cout << "\nAfter inserting " << x << ":\n";
         printTree();
       }
@@ -202,22 +227,28 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
 
         //find right spot in parent
 
+        //TODO: Check out if it works when promoted values comes from middle child
         if(temp.compare(t->parent->key1) > 0){
           t->parent->key2 = temp;
           t->parent->lines2 = tempLines;
+          t->parent->rightchild = new node(t->key2, NULL, NULL);
+          t->parent->rightchild->lines1 = t->lines2;
+          t->key2 = "";
+          t->lines2.clear();
           cout << "\nAfter inserting " << x << ":\n";
           printTree();
         }
         else{ //By now we've determined the value to promote, and that the value is less the the parent's value
+          //swap parents key1 and key 2
           t->parent->key2 = t->parent->key1;
-          t->parent->key1 = temp;
           t->parent->lines2 = t->parent->lines1;
+          //enter in new value
+          t->parent->key1 = temp;
           t->parent->lines1.clear();
-          t->parent->lines1.push_back(line);
-
-          //TODO: childlink management
+          t->parent->lines1 = tempLines;
+          //child management;
           t->parent->rightchild = t->parent->middlechild;
-          t->parent->middlechild = new node(t->key2, NULL, NULL);//NO, new node with k2 from split node
+          t->parent->middlechild = new node(t->key2, NULL, NULL);
           t->parent->middlechild->lines1 = t->lines2;
           t->key2 = "";
           t->lines2.clear();
@@ -236,6 +267,6 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
     else if(t->rightchild == NULL || x.compare(t->key2) < 0)
         insertHelper(x, line, t->middlechild, t, distWord);
     else
-        insertHelper(x, line, t->leftchild, t, distWord);
+        insertHelper(x, line, t->rightchild, t, distWord);
 
 }
