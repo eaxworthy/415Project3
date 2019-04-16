@@ -1,3 +1,4 @@
+
 //Description: Implementations for the binary search tree class.
 
 #include "TTT.h"
@@ -91,17 +92,13 @@ void TTT::buildTree(ifstream & input){
 	finishTime = clock();
 	totalTime = (double) (finishTime - startTime)/CLOCKS_PER_SEC;
 	treeHeight = findHeight(root);
-
 	//Print output
 	cout << setw(40) << std::left;
 	cout << "Total number of words: " << numWords<< endl;
-
 	cout << setw(40) << std::left
 	<< "Total number of distinct words: " << distWords << endl;
-
 	cout << setw(40) << std::left
 	<<"Total time spent building index: " << totalTime << endl;
-
 	cout << setw(40) << std::left
 	<<"Height of TTT is : " << treeHeight << endl;
   *****/
