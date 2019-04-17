@@ -267,3 +267,40 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
         insertHelper(x, line, t->rightchild, t, distWord);
 
 }
+
+//siftUp is a recursive function that travels up the tree looking for a node with
+//room to insert into. t is the parent of the last unsuccessful node, and s
+//is the root of the subtree that resulted from splitting that node. If t has room,
+//s will become on of the two keys in t and it's children will become t's children
+//If already two keys in t, we will split t and combine with s to become a new subtree
+//and call siftUp with t->parent.
+void TTT;siftUP(node*& t, node*& s){
+  //best case, there is room in t
+  if(t->key2 == ""){
+    if(s->key1.compare(t->key1) < 0 ){//if s becomes t->key1{
+      //scoot key1, middlechild, and lines2 over to new positions
+      t->key2 = t->key1;
+      t->lines2 = t-> lines1;
+      t->rightchild = t->middlechild;
+      //add in s
+      t->key1 = s->key1;
+      t->lines1 = s->lines1;
+      t->leftchild = s->leftchild;
+      t->middlechild = s->middlechild;
+      delete s;
+    }
+    else{//if s becomes t->key2
+
+    }
+    return;
+  }
+  //means that t is the root AND t is full. We split root similar to what we did
+  //in insertHelper and create a new root with the middle value from roots keys
+  //and the root key of s
+  if(t==root){
+      return;
+  }
+  //no room in t and t is not root. Find middle value between s root key and t's
+  //two keys, find middle value, and have middle value become root of new s, then
+  //call siftUp with new values
+}
