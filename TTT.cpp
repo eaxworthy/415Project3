@@ -131,8 +131,8 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
     }
 
     //Word is new distinct word, ie, x will never be key1 or key2
-
-    if(t->leftchild == NULL){ //leaf node reached
+    //TODO: check that second condition isn't messing stuff up
+    if(t->leftchild == NULL && t->middlechild == NULL){ //leaf node reached
       if(t->key2 == ""){ //single value in leaf DONE
         if(x.compare(t->key1) < 0){ //x is smaller than first key
           t->key2 = t->key1;
@@ -252,8 +252,11 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
           printTree();
         }
       }
-      else{ //need to promote and no room in parent. The tricky part
 
+      else{ //need to promote and no room in parent. The tricky part
+        //TODO: Figure out the split to make the initial subtree
+        node* s;
+        siftUP(t->parent, s);
       }
     }
 
@@ -318,7 +321,7 @@ void TTT;siftUP(node*& t, node*& s){
     }
     else{//s formed from middle or right
 
-      if(s->key1.compare(s->key1) < 0){//s formed from middlechild
+      if(s->key1.compare(s->key2) < 0){//s formed from middlechild
         //Double checked
         node* newmiddle = new node(t->key2, s->middlechild, t->rightchild);
         newmiddle->lines1 = t->lines2;
@@ -345,10 +348,43 @@ void TTT;siftUP(node*& t, node*& s){
   //two keys, find middle value, and have middle value become root of new s, then
   //call siftUp with new values
   else{
-    //TODO: split
+    node* temp;
     //leftchild case
+    if(s->key1.compare(t->key1) < 0){
+      temp = new node(t->key1, s, t);
+      temp->lines1=t->lines1;
+      t->key1 = t->key2;
+      t->lines1 = t->lines2;
+      t->key2 = "";
+      t->lines2.clear();
+      t->leftchild = t->middlechild;
+      t->middlechild = t->rightchild;
+      t->rightchild = NULL;
+    }
+    else{
     //middlechild case
+      if(s->key1.compare(t->key2) < 0){
+        temp = new node(s->key1, t, s);
+        temp->lines1=s->lines1;
+        t->middlechild = s->leftchild;
+        s->key1 = t->key2;
+        s->lines1 = t->lines2;
+        s->leftchild = s->middlechild;
+        s->middlechild = t->rightchild;
+        t->key2="";
+        t->lines2.clear();
+        t->rightchild = NULL;
+      }
     //rightchild case
+      else{
+        temp = new node(t->key2, t, s);
+        temp->lines1 = t->lines2;
+        t->key2="";
+        t->lines2.clear();
+        t->rightchild = NULL;
+        s = temp;
+      }
+    }
     siftUp(t->parent, s);
   }
 }
