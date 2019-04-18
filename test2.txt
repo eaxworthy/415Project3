@@ -1,1 +1,2 @@
-The grid is a computing Zinfandel but jackal
+Hello, this is a test
+of how exactly the getline

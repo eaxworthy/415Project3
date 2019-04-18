@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <sstream>
 
+
 //Constructor
 TTT::TTT(){
     root = NULL;
@@ -109,14 +110,16 @@ void TTT::buildTree(ifstream & input){
 //examined, and distWord is incremented if a new word is created
 //and used by buildTree
 void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &distWord){
+    cout << "Inserting " << x << endl;
     //First Call: Initialize root
     if(t == NULL){
-	    t = new node(x, NULL, NULL);
+      //cout << "\nT=Null\n";
+	    t = new node(x, NULL, NULL, nullNode);
       t->parent = NULL;
 	    t->lines1.push_back(line);
 	    distWord++;
-      cout << "Created node for word " << t->key1;
-      cout << " which is found on line " << t->lines1.back() << endl;
+      //cout << "Created node for word " << t->key1;
+      //cout << " which is found on line " << t->lines1.back() << endl;
       return;
     }
 
@@ -133,26 +136,30 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
     //Word is new distinct word, ie, x will never be key1 or key2
     //TODO: check that second condition isn't messing stuff up
     if(t->leftchild == NULL && t->middlechild == NULL){ //leaf node reached
+      //cout << "\nGot to 138\n";
       if(t->key2 == ""){ //single value in leaf DONE
+        //cout << "\nGot to 140\n";
         if(x.compare(t->key1) < 0){ //x is smaller than first key
+          //cout << "\nGot to 142\n";
           t->key2 = t->key1;
           t->key1 = x;
           t->lines2 = t->lines1;
           t->lines1.clear();
           t->lines1.push_back(line);
-          cout<< "swapped " << t->key2 << "with " << x << endl;
+          cout<< "\nswapped " << t->key2 << " with " << x;
           cout << "\nAfter inserting " << x << ":\n";
           printTree();
         }
         else if(x.compare(t->key1) > 0){ //x is larger than first key
+          //cout << "\nGot to 153\n";
           t->key2 = x;
           t->lines2.push_back(line);
           cout << "\nAfter inserting " << x << ":\n";
           printTree();
         }
       }
-
       else if(t==root){ //a one time case for the third word, when root is a leaf
+        //cout << "\nGot to 161\n";
         string temp = t->key1;
         vector<int> tempLines = t->lines1;
         if(x.compare(t->key1) > 0){
@@ -162,7 +169,6 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
             t->lines2.clear();
             t->lines2.push_back(line);
             t->key2 = x;
-            cout << t->key1 << ' ' << temp << t->key2 << endl;
           }
 
           else {   //case x is middle word
@@ -177,12 +183,10 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
           t->lines1.push_back(line);
         }
 
-        node* leftChild = new node(t->key1, NULL, NULL);
+        node* leftChild = new node(t->key1, NULL, NULL, root);
         leftChild->lines1 = t->lines1;
-        leftChild->parent = root;
-        node* rightChild = new node(t->key2, NULL, NULL);
+        node* rightChild = new node(t->key2, NULL, NULL, root);
         rightChild->lines1 = t->lines2;
-        rightChild->parent = root;
         t->key1 = temp;
         t->key2 = "";
         t->leftchild = leftChild;
@@ -193,12 +197,9 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
         cout << "\nAfter inserting " << x << ":\n";
         printTree();
       }
-
-      else if(t!= root && t->parent->key2==""){ //need to promote a value and parent has room
-
+      else if(t->parent->key2==""){ //need to promote a value and parent has room
         string temp = t->key1;
         vector<int> tempLines = t->lines1;
-
         //get middle value and it's lines
         if(x.compare(t->key1) > 0){
           if(x.compare(t->key2) > 0){ //case: x is largest word
@@ -227,7 +228,7 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
         if(temp.compare(t->parent->key1) > 0){
           t->parent->key2 = temp;
           t->parent->lines2 = tempLines;
-          t->parent->rightchild = new node(t->key2, NULL, NULL);
+          t->parent->rightchild = new node(t->key2, NULL, NULL, t->parent);
           t->parent->rightchild->lines1 = t->lines2;
           t->key2 = "";
           t->lines2.clear();
@@ -244,7 +245,7 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
           t->parent->lines1 = tempLines;
           //child management;
           t->parent->rightchild = t->parent->middlechild;
-          t->parent->middlechild = new node(t->key2, NULL, NULL);
+          t->parent->middlechild = new node(t->key2, NULL, NULL, t->parent);
           t->parent->middlechild->lines1 = t->lines2;
           t->key2 = "";
           t->lines2.clear();
@@ -254,19 +255,60 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
       }
 
       else{ //need to promote and no room in parent. The tricky part
+        //cout << "got to 257\n";
         //TODO: Figure out the split to make the initial subtree
-        node* s;
-        siftUP(t->parent, s);
+        node* leftchild;
+        node* middlechild;
+        if(x.compare(t->key1) > 0){
+          if(x.compare(t->key2) < 0){//x is middle
+            leftchild = new node(t->key1, NULL, NULL, t);
+            leftchild ->lines1 = t->lines1;
+            middlechild = new node(t->key2, NULL, NULL, t);
+            middlechild->lines1 = t->lines2;
+            t->key1 = x;
+            t->key2 = "";
+            t->lines1.clear();
+            t->lines1.push_back(line);
+            t->lines2.clear();
+            t->leftchild = leftchild;
+            t->middlechild = middlechild;
+          }
+          else{//x is max
+            leftchild = new node(t->key1, NULL, NULL, t);
+            leftchild->lines1 = t->lines1;
+            middlechild = new node(x, NULL, NULL, t);
+            middlechild->lines1.push_back(line);
+            t->key1=t->key2;
+            t->key2 = "";
+            t->lines1=t->lines2;
+            t->lines2.clear();
+            t->leftchild = leftchild;
+            t->middlechild = middlechild;
+          }
+        }
+        else{//x is min
+          leftchild = new node(x, NULL, NULL, t);
+          leftchild->lines1.push_back(line);
+          middlechild = new node(t->key2, NULL, NULL, t);
+          middlechild->lines1 = t->lines2;
+          t->key2="";
+          t->lines2.clear();
+          t->leftchild=leftchild;
+          t->middlechild=middlechild;
+        }
+        //using t as second arg might cause problems
+        siftUp(t->parent, t);
       }
     }
 
     //find correct path to go down
-    else if(x.compare(t->key1) < 0)
-      insertHelper(x, line, t->leftchild, t, distWord);
-    else if(t->rightchild == NULL || x.compare(t->key2) < 0)
-        insertHelper(x, line, t->middlechild, t, distWord);
-    else
+    else if(x.compare(t->key1) < 0){
+        insertHelper(x, line, t->leftchild, t, distWord);}
+    else if(t->rightchild == NULL || x.compare(t->key2) < 0){
+        insertHelper(x, line, t->middlechild, t, distWord);}
+    else{
         insertHelper(x, line, t->rightchild, t, distWord);
+      }
 
 }
 
@@ -276,7 +318,7 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
 //s will become on of the two keys in t and it's children will become t's children
 //If already two keys in t, we will split t and combine with s to become a new subtree
 //and call siftUp with t->parent.
-void TTT;siftUP(node*& t, node*& s){
+void TTT::siftUp(node*& t, node*& s){
   //best case, there is room in t
   if(t->key2 == ""){
 
@@ -292,14 +334,14 @@ void TTT;siftUP(node*& t, node*& s){
       t->middlechild = s->middlechild;
       //delete s since we allocated it with new and don't need that node anymore
       //TODO: double check we NEED to delete it
-      delete s;
     }
     else{//if s becomes t->key2
       t->key2 = s->key1;
       t->middlechild = s->leftchild;
       t->rightchild = s->middlechild;
-      delete s;
     }
+    cout << "\nSpace Found\n";
+    printTree();
     return;
   }
   //means that t is the root AND t is full. We split root similar to what we did
@@ -309,12 +351,12 @@ void TTT;siftUP(node*& t, node*& s){
 
     if(s->key1.compare(t->key1) < 0){//s formed from leftchild
       //Double checked
-      root = new node(t->key1, s, t);
+      root = new node(t->key1, s, t, nullNode);
       root->lines1 = t->lines1;
       t->key1 = t->key2;
       t->lines1 = t->lines2;
       t->lines2.clear();
-      t->lines2="";
+      t->key2="";
       t->leftchild = t->middlechild;
       t->middlechild = t->rightchild;
       t->rightchild = NULL;
@@ -323,25 +365,30 @@ void TTT;siftUP(node*& t, node*& s){
 
       if(s->key1.compare(s->key2) < 0){//s formed from middlechild
         //Double checked
-        node* newmiddle = new node(t->key2, s->middlechild, t->rightchild);
+        node* newmiddle = new node(t->key2, s->middlechild, t->rightchild, nullNode);
         newmiddle->lines1 = t->lines2;
         t->key2 = "";
         t->lines2.clear();
         t->middlechild = s->leftchild;
         t->rightchild = NULL;
-        root = new node(s->key1, t, newmiddle);
+        root = new node(s->key1, t, newmiddle, nullNode);
+        t->parent = root;
+        newmiddle->parent = root;
       }
 
       else{//s formed from rightchild
         //Double Checked
-        root = new node(t->key2, t, s);
+        root = new node(t->key2, t, s, nullNode);
         root->lines1 = t->lines2;
         t->key2="";
         t->lines2.clear();
-        t->lines2="";
         t->rightchild = NULL;
+        t->parent = root;
+        s->parent = root;
       }
     }
+    cout << "\nRoot Split\n";
+    printTree();
     return;
   }
   //no room in t and t is not root. Find middle value between s root key and t's
@@ -351,7 +398,7 @@ void TTT;siftUP(node*& t, node*& s){
     node* temp;
     //leftchild case
     if(s->key1.compare(t->key1) < 0){
-      temp = new node(t->key1, s, t);
+      temp = new node(t->key1, s, t, NULL);
       temp->lines1=t->lines1;
       t->key1 = t->key2;
       t->lines1 = t->lines2;
@@ -364,7 +411,7 @@ void TTT;siftUP(node*& t, node*& s){
     else{
     //middlechild case
       if(s->key1.compare(t->key2) < 0){
-        temp = new node(s->key1, t, s);
+        temp = new node(s->key1, t, s, NULL);
         temp->lines1=s->lines1;
         t->middlechild = s->leftchild;
         s->key1 = t->key2;
@@ -377,7 +424,7 @@ void TTT;siftUP(node*& t, node*& s){
       }
     //rightchild case
       else{
-        temp = new node(t->key2, t, s);
+        temp = new node(t->key2, t, s, NULL);
         temp->lines1 = t->lines2;
         t->key2="";
         t->lines2.clear();
