@@ -153,7 +153,6 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
       }
 
       else if(t==root){ //a one time case for the third word, when root is a leaf
-        //TODO Add in comparison to determine correct value to promote
         string temp = t->key1;
         vector<int> tempLines = t->lines1;
         if(x.compare(t->key1) > 0){
@@ -277,6 +276,7 @@ void TTT::insertHelper(const string &x, int line, node *& t, node *& p, int &dis
 void TTT;siftUP(node*& t, node*& s){
   //best case, there is room in t
   if(t->key2 == ""){
+
     if(s->key1.compare(t->key1) < 0 ){//if s becomes t->key1{
       //scoot key1, middlechild, and lines2 over to new positions
       t->key2 = t->key1;
@@ -287,10 +287,15 @@ void TTT;siftUP(node*& t, node*& s){
       t->lines1 = s->lines1;
       t->leftchild = s->leftchild;
       t->middlechild = s->middlechild;
+      //delete s since we allocated it with new and don't need that node anymore
+      //TODO: double check we NEED to delete it
       delete s;
     }
     else{//if s becomes t->key2
-
+      t->key2 = s->key1;
+      t->middlechild = s->leftchild;
+      t->rightchild = s->middlechild;
+      delete s;
     }
     return;
   }
@@ -298,9 +303,52 @@ void TTT;siftUP(node*& t, node*& s){
   //in insertHelper and create a new root with the middle value from roots keys
   //and the root key of s
   if(t==root){
-      return;
+
+    if(s->key1.compare(t->key1) < 0){//s formed from leftchild
+      //Double checked
+      root = new node(t->key1, s, t);
+      root->lines1 = t->lines1;
+      t->key1 = t->key2;
+      t->lines1 = t->lines2;
+      t->lines2.clear();
+      t->lines2="";
+      t->leftchild = t->middlechild;
+      t->middlechild = t->rightchild;
+      t->rightchild = NULL;
+    }
+    else{//s formed from middle or right
+
+      if(s->key1.compare(s->key1) < 0){//s formed from middlechild
+        //Double checked
+        node* newmiddle = new node(t->key2, s->middlechild, t->rightchild);
+        newmiddle->lines1 = t->lines2;
+        t->key2 = "";
+        t->lines2.clear();
+        t->middlechild = s->leftchild;
+        t->rightchild = NULL;
+        root = new node(s->key1, t, newmiddle);
+      }
+
+      else{//s formed from rightchild
+        //Double Checked
+        root = new node(t->key2, t, s);
+        root->lines1 = t->lines2;
+        t->key2="";
+        t->lines2.clear();
+        t->lines2="";
+        t->rightchild = NULL;
+      }
+    }
+    return;
   }
   //no room in t and t is not root. Find middle value between s root key and t's
   //two keys, find middle value, and have middle value become root of new s, then
   //call siftUp with new values
+  else{
+    //TODO: split
+    //leftchild case
+    //middlechild case
+    //rightchild case
+    siftUp(t->parent, s);
+  }
 }

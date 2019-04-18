@@ -20,7 +20,7 @@ public:
     void buildTree(ifstream & input);
 private:
   struct node{
-     node(const string &x, node *l, node *r){
+     node(const string &x, node *l, node *m){
             key1=x;
             key2="";
             leftchild = l;
