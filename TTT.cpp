@@ -24,39 +24,23 @@ void TTT::printTree(ostream& out) const {
 void TTT::printTreeHelper(node* t, ostream& out) const {
 	if (t == NULL)
 		return;
-	/*else{
+	else{
 	  printTreeHelper(t->leftchild, out);
 	  out << setw(30) << std::left;
-		  out << "K1: "<< t->key1 << " " << t->lines1[0];
+		  out << t->key1 << " " << t->lines1[0];
 		  for (int i = 1; i < t->lines1.size(); i++)
 			  out << ", " << t->lines1[i];
 		  out << endl;
 		  printTreeHelper(t->middlechild, out);
 	  if(t->key2.compare("") != 0){
 		out << setw(30) << std::left;
-		  out << "K2: " << t->key2 << " " << t->lines2[0];
+		  out << t->key2 << " " << t->lines2[0];
 		  for (int i = 1; i < t->lines2.size(); i++)
 			  out << ", " << t->lines2[i];
 		  out << endl;
 		  printTreeHelper(t->rightchild, out);
 	  }
-	  }*/
-	cout << t->key1 << " : " << t->key2 << endl;
-	cout << "Lines1: " << ' ' << t->lines1[0];
-	for (int i = 1; i < t->lines1.size(); i++)
-		out << ", " << t->lines1[i];
-	if (t->key2 != "") {
-		cout << "\nLines2: " << ' ' << t->lines2[0];
-		for (int i = 1; i < t->lines2.size(); i++)
-			out << ", " << t->lines2[i];
-	}
-	cout << endl;
-	cout << "Leftchild\n";
-	printTreeHelper(t->leftchild, out);
-	cout << "Middlechild\n";
-	printTreeHelper(t->middlechild, out);
-	cout << "Rightchild\n";
-	printTreeHelper(t->rightchild, out);
+	 }
 }
 
 //Receives the specified input file and constructs
@@ -121,9 +105,6 @@ void TTT::buildTree(ifstream & input) {
 void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& distWord) {
 	//cout << "Inserting " << x << endl;
 	//First Call: Initialize root
-	if (x.compare("works") == 0) {
-		cout << "";
-	}
 	if (t == NULL) {
 		//cout << "\nT=Null\n";
 		t = new node(x, NULL, NULL, nullNode);
@@ -138,12 +119,12 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 	//Word is not a new distinct word
 	if (x.compare(t->key1) == 0) {
 		t->lines1.push_back(line);
-		printTree();
+		//printTree();
 		return;
 	}
 	else if (x.compare(t->key2) == 0) {
 		t->lines2.push_back(line);
-		printTree();
+		//printTree();
 		return;
 	}
 
@@ -160,16 +141,16 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 				t->lines2 = t->lines1;
 				t->lines1.clear();
 				t->lines1.push_back(line);
-				cout << "\nswapped " << t->key2 << " with " << x;
-				cout << "\nAfter inserting " << x << ":\n";
-				printTree();
+				//cout << "\nswapped " << t->key2 << " with " << x;
+				//cout << "\nAfter inserting " << x << ":\n";
+				//printTree();
 			}
 			else if (x.compare(t->key1) > 0) { //x is larger than first key
 			  //cout << "\nGot to 153\n";
 				t->key2 = x;
 				t->lines2.push_back(line);
-				cout << "\nAfter inserting " << x << ":\n";
-				printTree();
+				//cout << "\nAfter inserting " << x << ":\n";
+				//printTree();
 				return;
 			}
 		}
@@ -209,8 +190,8 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 			t->lines1.clear();
 			t->lines2.clear();
 			t->lines1 = tempLines;
-			cout << "\nAfter inserting " << x << ":\n";
-			printTree();
+			//cout << "\nAfter inserting " << x << ":\n";
+			//printTree();
 			return;
 		}
 		else if (t->parent->key2 == "") { //need to promote a value and parent has room
@@ -248,8 +229,8 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 				t->parent->rightchild->lines1 = t->lines2;
 				t->key2 = "";
 				t->lines2.clear();
-				cout << "\nAfter inserting " << x << ":\n";
-				printTree();
+				//cout << "\nAfter inserting " << x << ":\n";
+				//printTree();
 			}
 			else { //By now we've determined the value to promote, and that the value is less the the parent's value
 			  //swap parents key1 and key 2
@@ -265,8 +246,8 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 				t->parent->middlechild->lines1 = t->lines2;
 				t->key2 = "";
 				t->lines2.clear();
-				cout << "\nAfter inserting " << x << ":\n";
-				printTree();
+				//cout << "\nAfter inserting " << x << ":\n";
+				//printTree();
 			}
 		}
 
@@ -355,8 +336,8 @@ void TTT::siftUp(node * t, node * s) {
 			t->middlechild = s->leftchild;
 			t->rightchild = s->middlechild;
 		}
-		cout << "\nSpace Found\n";
-		printTree();
+		//cout << "\nSpace Found\n";
+		//printTree();
 		return;
 	}
 	//means that t is the root AND t is full. We split root similar to what we did
@@ -404,8 +385,8 @@ void TTT::siftUp(node * t, node * s) {
 				s->parent = root;
 			}
 		}
-		cout << "\nRoot Split\n";
-		printTree();
+		//cout << "\nRoot Split\n";
+		//printTree();
 		return;
 	}
 	//no room in t and t is not root. Find middle value between s root key and t's
