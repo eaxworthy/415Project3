@@ -24,6 +24,9 @@ void TTT::printTree(ostream& out) const {
 void TTT::printTreeHelper(node* t, ostream& out) const {
 	if (t == NULL)
 		return;
+	if (t->key1.compare("comprised") == 0) {
+		cout << "";
+	}
 	else{
 	  printTreeHelper(t->leftchild, out);
 	  out << setw(30) << std::left;
@@ -103,7 +106,10 @@ void TTT::buildTree(ifstream & input) {
 //examined, and distWord is incremented if a new word is created
 //and used by buildTree
 void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& distWord) {
-	//cout << "Inserting " << x << endl;
+	/*if (x.compare("processor") == 0) {
+		printTree();
+		cout << "";
+	}*/
 	//First Call: Initialize root
 	if (t == NULL) {
 		//cout << "\nT=Null\n";
@@ -334,7 +340,10 @@ void TTT::siftUp(node * t, node * s) {
 			t->key2 = s->key1;
 			t->lines2 = s->lines1;
 			t->middlechild = s->leftchild;
+			t->middlechild->parent = t;
 			t->rightchild = s->middlechild;
+			t->rightchild->parent = t;
+			cout << "";
 		}
 		//cout << "\nSpace Found\n";
 		//printTree();
@@ -360,18 +369,23 @@ void TTT::siftUp(node * t, node * s) {
 		}
 		else {//s formed from middle or right
 
-			if (s->key1.compare(s->key2) < 0) {//s formed from middlechild
+			if (s->key1.compare(t->key2) < 0) {//s formed from middlechild
 			  //Double checked
 				//make a new mode to be root's middle child
 				node* newmiddle = new node(t->key2, s->middlechild, t->rightchild, nullNode);
 				newmiddle->lines1 = t->lines2;
+				s->middlechild->parent = newmiddle;
+				t->rightchild->parent = newmiddle;
 				t->key2 = "";
 				t->lines2.clear();
 				t->middlechild = s->leftchild;
+				s->leftchild->parent = t;
 				t->rightchild = NULL;
 				root = new node(s->key1, t, newmiddle, nullNode);
+				root->lines1 = s->lines1;
 				t->parent = root;
 				newmiddle->parent = root;
+				cout << "";
 			}
 
 			else {//s formed from rightchild
