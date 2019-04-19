@@ -51,7 +51,6 @@ void TTT::printTreeHelper(node* t, ostream& out) const {
 //the actual tree. Prints a message when finished.
 void TTT::buildTree(ifstream & input) {
 	int line = 1, distWords = 0, treeHeight = 0;
-	stringstream tempWord;
 	double totalTime, finishTime, startTime = clock();
 	while (!input.eof()) {
 		string tempLine, tempWord;
@@ -67,6 +66,8 @@ void TTT::buildTree(ifstream & input) {
 
 			//Trim any punctuation off end of word. Will leave things like apostrophes
 			//and decimal points
+			if(!isalnum(tempWord[0]))
+				tempWord.erase(0);
 			while (tempWord.length() > 0 && !isalnum(tempWord[tempWord.length() - 1]))
 				tempWord.resize(tempWord.size() - 1);
 
@@ -104,7 +105,7 @@ void TTT::buildTree(ifstream & input) {
 //examined, and distWord is incremented if a new word is created
 //and used by buildTree.
 void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& distWord) {
-	/*if (x.compare("processor") == 0) {
+	/*if (x.compare("Heaven") == 0) {
 		printTree();
 		cout << "";
 	}*/
@@ -318,9 +319,9 @@ void TTT::siftUp(node * t, node * s) {
 			t->key1 = s->key1;
 			t->lines1 = s->lines1;
 			t->leftchild = s->leftchild;
+			t->leftchild->parent = t;
 			t->middlechild = s->middlechild;
-			//delete s since we allocated it with new and don't need that node anymore
-			//TODO: double check we NEED to delete it
+			t->middlechild->parent = t;
 		}
 		else {//if s becomes t->key2
 			t->key2 = s->key1;
@@ -417,10 +418,12 @@ void TTT::siftUp(node * t, node * s) {
 				s->parent = temp;
 				temp->lines1 = s->lines1;
 				t->middlechild = s->leftchild;
+				t->middlechild->parent = t;
 				s->key1 = t->key2;
 				s->lines1 = t->lines2;
 				s->leftchild = s->middlechild;
 				s->middlechild = t->rightchild;
+				s->middlechild->parent = s;
 				t->key2 = "";
 				t->lines2.clear();
 				t->rightchild = NULL;
