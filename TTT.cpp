@@ -86,7 +86,7 @@ void TTT::buildTree(ifstream & input) {
 	}
 	  //Do time and height calculation
 	  finishTime = clock();
-	  totalTime = (double) (finishTime - startTime);
+	  totalTime = (double) (finishTime - startTime)/CLOCKS_PER_SEC;
 	  treeHeight = findHeight(root);
 	  //Print output
 	  cout << setw(40) << std::left;
