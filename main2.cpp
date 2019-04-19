@@ -8,11 +8,11 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-	cout << "Hi";
 
 	int choice;
 
 	if (argc != 2) {
+		cout << argc;
 		cout << "Incorrect input. Correct format: ./<exectuable.out> <inputtext.txt>\n";
 		return 1;
 	}
