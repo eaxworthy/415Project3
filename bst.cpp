@@ -25,7 +25,7 @@ void BST::contains() const{
     	if(containsHelper(input, root, foundNode)){
 	    cout << "Line Numbers: " << foundNode->lines[0];
 	    for(int i = 1; i < foundNode->lines.size(); i++)
-		cout << ", " <<foundNode->lines[i]; 
+		cout << ", " <<foundNode->lines[i];
 	    cout << '\n';
 	    }
 	else
@@ -39,7 +39,7 @@ void BST::printTree(ostream & out) const {
 	printTreeHelper(root, out);
 }
 
-//Receives the specified input file and constructs 
+//Receives the specified input file and constructs
 //the actual tree. Prints a message when finished.
 void BST::buildTree(ifstream & input){
 	int line = 1, numWords = 0, distWords = 0, treeHeight = 0;
@@ -56,12 +56,12 @@ void BST::buildTree(ifstream & input){
 			tempWord.insert(tempWord.end(), tempLine[i]);
 			i++;
 		    }
-		   
+
             //Trim any punctuation off end of word. Will leave things like apostrophes
             //and decimal points
             while(tempWord.length() > 0 && !isalnum(tempWord[tempWord.length() - 1]))
-			    tempWord.resize(tempWord.size() -1);   
-			
+			    tempWord.resize(tempWord.size() -1);
+
             if (tempWord.length() > 0)
             {
                 //Once word is formatted,call insert with the word, the line of the input
@@ -72,7 +72,7 @@ void BST::buildTree(ifstream & input){
                 //Clear out tempWord so we can use it again
                 tempWord.clear();
 		    }
-			
+
 		}
 		line++;
 	}
@@ -85,15 +85,15 @@ void BST::buildTree(ifstream & input){
 	cout << setw(40) << std::left;
 	cout << "Total number of words: " << numWords<< endl;
 
-	cout << setw(40) << std::left 
+	cout << setw(40) << std::left
 	<< "Total number of distinct words: " << distWords << endl;
 
-	cout << setw(40) << std::left 
+	cout << setw(40) << std::left
 	<<"Total time spent building index: " << totalTime << endl;
 
 	cout << setw(40) << std::left
 	<<"Height of BST is : " << treeHeight << endl;
- 
+
 }
 
 //x is the word to insert, line is the line in the text file
@@ -115,7 +115,7 @@ void BST::insertHelper(const string &x, int line, node *& t, int &distWord){
 	    t->lines.push_back(line);
 	else
 	    insertHelper(x, line, t->left, distWord);
-			
+
     }
 }
 
@@ -138,7 +138,7 @@ bool BST::containsHelper(const string & x, node * t, node * &result) const{
 //Called by printTree(), does the actual formatted printing
 void BST::printTreeHelper(node *t, ostream & out) const{
     if(t == NULL)
-		return;
+        return;
 	else {
 		printTreeHelper(t->left, out);
 		out << setw(30) << std::left;
@@ -150,7 +150,7 @@ void BST::printTreeHelper(node *t, ostream & out) const{
 	}
 }
 
-//Returns height of tree. If tree has only one node, height is 1    
+//Returns height of tree. If tree has only one node, height is 1
 int BST::findHeight(node *t){
     if(t == NULL)
 	return 0;
@@ -158,7 +158,7 @@ int BST::findHeight(node *t){
 	int leftHeight = findHeight(t->left), rightHeight = findHeight(t->right);
 	if(leftHeight > rightHeight)
 	    return(leftHeight+1);
-	else 
+	else
 	    return(rightHeight+1);
     }
 }
