@@ -20,17 +20,15 @@ int main(int argc, char* argv[]) {
 	TTT myTree;
 	if(input.is_open()){
 			myTree.buildTree(input);
-			myTree.printTree(cout);
 			input.close();
-/*****
+
 			while(1){
 			choice = 0;
 			cout <<"Options: (1) display index, (2) search, (3) save index, (4) quit\n";
 			cin >> choice;
-*****/
-/*****
+
 		//Print index
-			if(choice == 1)
+		if(choice == 1)
 				myTree.printTree(cout);
 
 		//Search index for a word
@@ -38,7 +36,7 @@ int main(int argc, char* argv[]) {
 				myTree.contains();
 
 		//Save index
-			else if(choice == 3){
+		else if(choice == 3){
 			string outputFile;
 				cout << "Enter a filename to save your index to (Suggested: <filename>.txt) : ";
 			cin >> outputFile;
@@ -50,11 +48,9 @@ int main(int argc, char* argv[]) {
 
 		//Quit
 			else
-			break;
+				break;
 			}
-		}
-	*****/
-  }
+	}
 
 	else{
 		cout << "Invalid File Name. Restart Program.\n";

@@ -10,6 +10,7 @@
 //Constructor
 TTT::TTT() {
 	root = NULL;
+	numWords = 0;
 }
 
 //Returns true if there are no nodes in the tree
@@ -49,7 +50,7 @@ void TTT::printTreeHelper(node* t, ostream& out) const {
 //Receives the specified input file and constructs
 //the actual tree. Prints a message when finished.
 void TTT::buildTree(ifstream & input) {
-	int line = 1, numWords = 0, distWords = 0, treeHeight = 0;
+	int line = 1, distWords = 0, treeHeight = 0;
 	stringstream tempWord;
 	double totalTime, finishTime, startTime = clock();
 	while (!input.eof()) {
@@ -79,15 +80,12 @@ void TTT::buildTree(ifstream & input) {
 				//Clear out tempWord so we can use it again
 				tempWord.clear();
 			}
-
 		}
 		line++;
 	}
-
-	/*****
 	  //Do time and height calculation
 	  finishTime = clock();
-	  totalTime = (double) (finishTime - startTime)/CLOCKS_PER_SEC;
+	  totalTime = (double) (finishTime - startTime);
 	  treeHeight = findHeight(root);
 	  //Print output
 	  cout << setw(40) << std::left;
@@ -98,13 +96,13 @@ void TTT::buildTree(ifstream & input) {
 	  <<"Total time spent building index: " << totalTime << endl;
 	  cout << setw(40) << std::left
 	  <<"Height of TTT is : " << treeHeight << endl;
-	*****/
+
 }
 
 //x is the word to insert, line is the line in the text file
 //the word was found at, node is the node of the tree being
 //examined, and distWord is incremented if a new word is created
-//and used by buildTree
+//and used by buildTree.
 void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& distWord) {
 	/*if (x.compare("processor") == 0) {
 		printTree();
@@ -137,31 +135,23 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 	//Word is new distinct word, ie, x will never be key1 or key2
 	//TODO: check that second condition isn't messing stuff up
 	if (t->leftchild == NULL && t->middlechild == NULL) { //leaf node reached
-	  //cout << "\nGot to 138\n";
+	  distWord++;
 		if (t->key2 == "") { //single value in leaf DONE
-		  //cout << "\nGot to 140\n";
 			if (x.compare(t->key1) < 0) { //x is smaller than first key
-			  //cout << "\nGot to 142\n";
 				t->key2 = t->key1;
 				t->key1 = x;
 				t->lines2 = t->lines1;
 				t->lines1.clear();
 				t->lines1.push_back(line);
-				//cout << "\nswapped " << t->key2 << " with " << x;
-				//cout << "\nAfter inserting " << x << ":\n";
-				//printTree();
+			  return;
 			}
-			else if (x.compare(t->key1) > 0) { //x is larger than first key
-			  //cout << "\nGot to 153\n";
+			else { //x is larger than first key
 				t->key2 = x;
 				t->lines2.push_back(line);
-				//cout << "\nAfter inserting " << x << ":\n";
-				//printTree();
 				return;
 			}
 		}
 		else if (t == root) { //a one time case for the third word, when root is a leaf
-		  //cout << "\nGot to 161\n";
 			string temp = t->key1;
 			vector<int> tempLines = t->lines1;
 			if (x.compare(t->key1) > 0) {
@@ -201,6 +191,7 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 			return;
 		}
 		else if (t->parent->key2 == "") { //need to promote a value and parent has room
+
 			string temp = t->key1;
 			vector<int> tempLines = t->lines1;
 			//get middle value and it's lines
@@ -226,8 +217,6 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 			}
 
 			//find right spot in parent
-
-			//TODO: Check out if it works when promoted values comes from middle child
 			if (temp.compare(t->parent->key1) > 0) {
 				t->parent->key2 = temp;
 				t->parent->lines2 = tempLines;
@@ -235,8 +224,6 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 				t->parent->rightchild->lines1 = t->lines2;
 				t->key2 = "";
 				t->lines2.clear();
-				//cout << "\nAfter inserting " << x << ":\n";
-				//printTree();
 			}
 			else { //By now we've determined the value to promote, and that the value is less the the parent's value
 			  //swap parents key1 and key 2
@@ -252,9 +239,8 @@ void TTT::insertHelper(const string & x, int line, node * &t, node * &p, int& di
 				t->parent->middlechild->lines1 = t->lines2;
 				t->key2 = "";
 				t->lines2.clear();
-				//cout << "\nAfter inserting " << x << ":\n";
-				//printTree();
 			}
+			return;
 		}
 
 		else { //need to promote and no room in parent. The tricky part
@@ -452,4 +438,48 @@ void TTT::siftUp(node * t, node * s) {
 		}
 		siftUp(temp->parent, temp);
 	}
+}
+
+void TTT::contains() const{
+	string input;
+	cout << "Search word: ";
+	cin >> input;
+	containsHelper(input, root);
+}
+void TTT::containsHelper(const string &x, node* t) const{
+	if(t==NULL){
+		cout << '\'' << x << '\''<< " not found\n";
+		return;
+	}
+	if(x==t->key1){
+		cout << x << " is on lines: ";
+		for(int i = 0; i < t->lines1.size(); i++)
+			cout << t->lines1[i] << ' ' ;
+		cout << " and has a frequency of: " << (float)t->lines1.size()/(float)numWords << endl;
+		return;
+	}
+	if(x==t->key2){
+		cout << x << " is on lines: ";
+		for(int i = 0; i < t->lines2.size(); i++)
+			cout << t->lines2[i] << ' ' ;
+		cout << " and has a frequency of: " << (float)t->lines2.size()/(float)numWords << endl;
+		return;
+	}
+	else{
+		if(x < t->key1)
+			containsHelper(x, t->leftchild);
+		else if (t->key2=="" || x < t->key2)
+			containsHelper(x, t->middlechild);
+		else
+			containsHelper(x, t->rightchild);
+	}
+}
+
+//Two-Three trees are balanced, so we only need to check one child. Height is
+//length of longest path, not level of deepest node
+int TTT::findHeight(node *t){
+	if(t->leftchild == NULL && t->middlechild == NULL)
+		return 0;
+	else
+			return findHeight(t->leftchild) + 1;
 }

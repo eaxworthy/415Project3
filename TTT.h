@@ -34,12 +34,13 @@ private:
 		node* parent, * leftchild, * middlechild, * rightchild;
 	};
 	node* root;
+	int numWords;
 
 	void insertHelper(const string& X, int line, node*& t, node*& p, int& distWords);
 	void siftUp(node* t, node* s);
-	//bool containsHelper(const string & x, node * t, node* &result) const;
+	void containsHelper(const string & x, node * t) const;
 	void printTreeHelper(node* t, ostream& out) const;
-	//int findHeight(node *t);
+	int findHeight(node *t);
 public:
 	node* nullNode = nullptr;
 };
