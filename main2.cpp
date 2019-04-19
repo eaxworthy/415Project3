@@ -8,6 +8,8 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
+	cout << "Hi";
+	/*
 	int choice;
 	if (argc != 2) {
 	    cout << "Incorrect input. Correct format: ./<exectuable.out> <inputtext.txt>\n";
@@ -50,11 +52,13 @@ int main(int argc, char* argv[]) {
 		    break;
             }
         }
-	*****/
+	*****
   }
+
 	else{
 	    cout << "Invalid File Name. Restart Program.\n";
 	    return 2;
   }
+	**/
 	return 0;
 }
