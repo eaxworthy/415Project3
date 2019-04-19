@@ -1,6 +1,6 @@
 //Description: Takes a text file supplied by the user
 //             and turns it into a word index, implemented
-//             through the use of a BST 
+//             through the use of a BST
 
 #include <iostream>
 #include <fstream>
@@ -8,7 +8,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
-	int choice;
+	int choice1, choice2;
 	if (argc != 2) {
 	    cout << "Incorrect input. Correct format: ./<exectuable.out> <inputtext.txt>\n";
 	    return 1;
@@ -20,7 +20,8 @@ int main(int argc, char* argv[]) {
 	if(input.is_open()){
             myTree.buildTree(input);
             input.close();
-            while(1){
+
+					while(1){
 	        choice = 0;
 	        cout <<"Options: (1) display index, (2) search, (3) save index, (4) quit\n";
 	        cin >> choice;
@@ -28,7 +29,7 @@ int main(int argc, char* argv[]) {
 		//Print index
 	        if(choice == 1)
 	            myTree.printTree(cout);
-	       
+
 		//Search index for a word
 		else if(choice == 2)
 	            myTree.contains();
@@ -44,7 +45,7 @@ int main(int argc, char* argv[]) {
 		    cout << "Saved\n";
 	        }
 
-		//Quit	
+		//Quit
 	        else
 		    break;
             }

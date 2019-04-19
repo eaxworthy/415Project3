@@ -397,6 +397,8 @@ void TTT::siftUp(node * t, node * s) {
 		//leftchild case
 		if (s->key1.compare(t->key1) < 0) {
 			temp = new node(t->key1, s, t, t->parent);
+			s->parent = temp;
+			t->parent = temp;
 			temp->lines1 = t->lines1;
 			t->key1 = t->key2;
 			t->lines1 = t->lines2;
