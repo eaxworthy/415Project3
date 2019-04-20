@@ -15,6 +15,7 @@ class TTT {
 public:
 	TTT();
 	void contains() const;
+	bool silentContains(string &x);
 	bool isEmpty();
 	void printTree(ostream& out = cout) const;
 	void buildTree(ifstream& input);
@@ -35,11 +36,12 @@ private:
 	};
 	node* root;
 	int numWords;
-
 	void insertHelper(const string& X, int line, node*& t, node*& p, int& distWords);
 	void siftUp(node* t, node* s);
 	void containsHelper(const string & x, node * t) const;
+	bool silentContainsHelper(const string &x, node* t) const;
 	void printTreeHelper(node* t, ostream& out) const;
+	void writeWordList(node* t, ostream& out);
 	int findHeight(node *t);
 public:
 	node* nullNode = nullptr;

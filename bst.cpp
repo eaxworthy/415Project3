@@ -59,6 +59,8 @@ void BST::buildTree(ifstream & input){
 
             //Trim any punctuation off end of word. Will leave things like apostrophes
             //and decimal points
+            if(!isalnum(tempWord[0]))
+              tempWord.erase(0);
             while(tempWord.length() > 0 && !isalnum(tempWord[tempWord.length() - 1]))
 			    tempWord.resize(tempWord.size() -1);
 
@@ -93,7 +95,6 @@ void BST::buildTree(ifstream & input){
 
 	cout << setw(40) << std::left
 	<<"Height of BST is : " << treeHeight << endl;
-
 }
 
 //x is the word to insert, line is the line in the text file
@@ -133,6 +134,21 @@ bool BST::containsHelper(const string & x, node * t, node * &result) const{
 		return containsHelper(x, t->right, result);
 	else
 		return containsHelper(x, t->left, result);
+}
+
+bool BST::silentContains(string &x){
+  return silentContainsHelper(x, root);
+}
+
+bool BST::silentContainsHelper(const string &x, node* t) const{
+  if(t==NULL)
+    return false;
+  if(t->key==x)
+      return true;
+  else if (x > t->key)
+  		return silentContainsHelper(x, t->right);
+	else
+    	return silentContainsHelper(x, t->left);
 }
 
 //Called by printTree(), does the actual formatted printing

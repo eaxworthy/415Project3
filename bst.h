@@ -12,9 +12,10 @@
 using namespace std;
 
 class BST{
-    public: 
+    public:
         BST();
         void contains() const;
+        bool silentContains(string &x);
         bool isEmpty();
         void printTree(ostream & out = cout) const;
         void buildTree(ifstream & input);
@@ -32,11 +33,9 @@ class BST{
 	node * root;
 	void insertHelper(const string &X, int line, node *& t, int &distWords);
 	bool containsHelper(const string & x, node * t, node* &result) const;
+  bool silentContainsHelper(const string &x, node* t) const;
 	void printTreeHelper(node *t, ostream & out) const;
 	int findHeight(node *t);
 };
-	
-#endif	
-    
-	
 
+#endif

@@ -23,10 +23,55 @@ int main(int argc, char* argv[]) {
 
 		cout << "Options: (1) BST, (2) 2-3 Tree, (3) Compare BST and 2-3 Tree\n";
 		cin >> choice;
+
 		if(choice == 3){
-			cout << "wah\n";
+			double bSearchTime = 0.0, tSearchTime = 0.0;
+			cout << "Building Two Tree Tree:\n-------------------------\n";
+			TTT tTree;
+			tTree.buildTree(input);
+
+			input.clear();
+			input.seekg( 0, std::ios::beg );
+
+			cout << "\nBuilding Binary Search Tree:\n-------------------------\n";
+			BST bTree;
+			bTree.buildTree(input);
+
+			input.close();
+			input.open("wordList0.txt");
+			cout << "\nBeginning Search:\n-------------------------\n";
+			double finishTime, startTime;
+			while (!input.eof()) {
+				string tempLine, tempWord;
+				getline(input, tempLine);
+				for (int i = 0; i < tempLine.length(); i++) {
+					while (tempLine[i] != ' ' && tempLine[i] != '\n' && i < tempLine.length()) {
+						tempWord.insert(tempWord.end(), tempLine[i]);
+						i++;
+					}
+					if(!isalnum(tempWord[0]))
+						tempWord.erase(0);
+					while (tempWord.length() > 0 && !isalnum(tempWord[tempWord.length() - 1]))
+						tempWord.resize(tempWord.size() - 1);
+					if (tempWord.length() > 0) {
+						startTime = clock();
+						tTree.silentContains(tempWord);
+						finishTime = clock();
+						tSearchTime += (finishTime-startTime)/CLOCKS_PER_SEC;
+						startTime = clock();
+						bTree.silentContains(tempWord);
+						finishTime = clock();
+						bSearchTime += (finishTime-startTime)/CLOCKS_PER_SEC;
+						tempWord.clear();
+					}
+				}
+			}
+			cout << "Done!\nTotal Search Times:\n-------------------------\n";
+			cout << "Two-Three Tree Times: " << tSearchTime << endl;
+			cout << "Binary Search Tree Times: " << bSearchTime << endl;
 		}
-		if(choice == 1){
+
+		else if(choice == 1){
 			BST myTree;
 			myTree.buildTree(input);
 			while(1){

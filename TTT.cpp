@@ -25,9 +25,6 @@ void TTT::printTree(ostream& out) const {
 void TTT::printTreeHelper(node* t, ostream& out) const {
 	if (t == NULL)
 		return;
-	if (t->key1.compare("comprised") == 0) {
-		cout << "";
-	}
 	else{
 	  printTreeHelper(t->leftchild, out);
 	  out << setw(30) << std::left;
@@ -37,14 +34,14 @@ void TTT::printTreeHelper(node* t, ostream& out) const {
 		  out << endl;
 		  printTreeHelper(t->middlechild, out);
 	  if(t->key2.compare("") != 0){
-		out << setw(30) << std::left;
+			out << setw(30) << std::left;
 		  out << t->key2 << " " << t->lines2[0];
 		  for (int i = 1; i < t->lines2.size(); i++)
 			  out << ", " << t->lines2[i];
 		  out << endl;
 		  printTreeHelper(t->rightchild, out);
 	  }
-	 }
+	}
 }
 
 //Receives the specified input file and constructs
@@ -84,6 +81,8 @@ void TTT::buildTree(ifstream & input) {
 		}
 		line++;
 	}
+		ofstream output("wordList0.txt");
+		writeWordList(root, output);
 	  //Do time and height calculation
 	  finishTime = clock();
 	  totalTime = (double) (finishTime - startTime)/CLOCKS_PER_SEC;
@@ -477,6 +476,42 @@ void TTT::containsHelper(const string &x, node* t) const{
 			containsHelper(x, t->middlechild);
 		else
 			containsHelper(x, t->rightchild);
+	}
+}
+
+//a boolean contains that only returns true or false depending on if the word is
+//found
+bool TTT::silentContains(string &x){
+	return silentContainsHelper(x, root);
+}
+bool TTT::silentContainsHelper(const string &x, node* t) const{
+	if(t==NULL){
+		return false;
+	}
+	if(x==t->key1 || x==t->key2){
+		return true;
+	}
+	else{
+		if(x < t->key1)
+			silentContainsHelper(x, t->leftchild);
+		else if (t->key2=="" || x < t->key2)
+			silentContainsHelper(x, t->middlechild);
+		else
+			silentContainsHelper(x, t->rightchild);
+	}
+}
+
+void TTT::writeWordList(node* t, ostream& out){
+	if (t == NULL)
+		return;
+	else{
+		writeWordList(t->leftchild, out);
+		out << t->key1 << " ";
+		writeWordList(t->middlechild, out);
+		if(t->key2.compare("") != 0){
+			out << t->key2;
+		  writeWordList(t->rightchild, out);
+		}
 	}
 }
 
